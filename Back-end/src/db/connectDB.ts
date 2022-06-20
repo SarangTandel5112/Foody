@@ -7,8 +7,7 @@ class connectDB {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         } as ConnectionOptions).then( () => {
-            console.log("Database has been Connected......");
-            
+            console.log("Database has been Connected......");            
         }).catch((error) => {
             console.log("error in database connection......");            
         })

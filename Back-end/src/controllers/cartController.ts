@@ -21,7 +21,7 @@ class cartController{
                 userId:userId,
                 totalPrice:totalPrice
             });
-            cart.foodId.push(uid)
+            // cart.foodId.push()
     
            await cart.save()  
            .then((data:any)=> {

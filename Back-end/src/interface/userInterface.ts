@@ -5,8 +5,11 @@ interface userDoc extends mongoose.Document {
     email: String,
     name: String,
     password: String,
-    createdAt: Date,
-    updatedAt: Date
+    address : String,
+    phone :{
+        type:Number,
+        unique : true, 
+    } 
 }
 
 

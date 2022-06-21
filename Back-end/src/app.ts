@@ -6,7 +6,7 @@ import User from './models/user';
 import cookieparser from 'cookie-parser';
 
 
-dotenv.config();
+dotenv.config({path:'/home/sanjay/VSC/zometo/.env'});
 
 const db = new connectDB();
 
@@ -19,7 +19,7 @@ class app {
     constructor() {
         this.middleWare();
         this.routes();
-        this.connection();
+        this.connection();        
     }
 
     private middleWare(): void {

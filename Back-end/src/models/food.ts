@@ -25,7 +25,7 @@ const foodSchema = new mongoose.Schema<foodinterface>({
         type: String,
         required: true
     },
-})
+},{timestamps:true})
 
 const food = model<foodinterface>("food", foodSchema)
 

@@ -140,14 +140,14 @@ class RestaurantRegistration {
         if (!name) {
             return res.status(404).json({ data: "name not found" })
         }
-        if(!description){
-            return res.status(404).json({ data: "description not found"})
+        if (!description) {
+            return res.status(404).json({ data: "description not found" })
         }
-        if(!price){
-            return res.status(404).json({ data: "price not found"})
+        if (!price) {
+            return res.status(404).json({ data: "price not found" })
         }
-        if(!status){
-            return res.status(404).json({ data: "status not found"})
+        if (!status) {
+            return res.status(404).json({ data: "status not found" })
         }
 
         const newitem = await new food({
@@ -157,8 +157,11 @@ class RestaurantRegistration {
             status,
             restaurantId: resId
         })
+        console.log("error");
+        throw new Error("try")
+
         newitem.save();
-        res.status(200).json({data:"Item added sucessfully"})
+        res.status(200).json({ data: "Item added sucessfully" })
     }
 
 }

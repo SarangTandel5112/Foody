@@ -9,9 +9,9 @@ const restaurantSchema = new mongoose.Schema({
     password: { type: String, required: true },
     items: [{
         type: Schema.Types.ObjectId,
-        ref:"food"
+        ref: "food"
     }]
-});
+}, { timestamps: true });
 
 const Restaurant = mongoose.model<restaurantDoc>("Restaurant", restaurantSchema);
 

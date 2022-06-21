@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
-import foodinterface from "../interface/food";
+import foodinterface from "../interface/foodInterface";
 
 const foodSchema = new mongoose.Schema<foodinterface>({
     name: {
@@ -26,7 +26,8 @@ const foodSchema = new mongoose.Schema<foodinterface>({
         type: String,
         required: true
     },
-})
+});
+
 
 const food = model<foodinterface>("food", foodSchema)
 

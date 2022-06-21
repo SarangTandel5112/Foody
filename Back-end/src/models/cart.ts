@@ -1,14 +1,26 @@
-import mongoose from "mongoose";
-import restaurantDoc from "../interface/restaurantInterface";
+import mongoose, { Schema, model } from "mongoose";
 
-const restaurantSchema = new mongoose.Schema ({
+import cartDoc from "../interface/cartInterface";
 
-    RestaurantName: { type: String, required: true },
-    OwnerName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+const cartSchema = new mongoose.Schema ({
+   
+    foodId: [{
+        type: Schema.Types.ObjectId,
+        ref: "food",
+    }],
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref:"User",
+    },
+    totalPrice: {
+        type:Number,
+        default:0,
+        required: true,
+
+    }
 });
 
-const Restaurant = mongoose.model<restaurantDoc>("Restaurant", restaurantSchema);
+
+const Restaurant = mongoose.model<cartDoc>("cart",cartSchema);
 
 export default Restaurant;

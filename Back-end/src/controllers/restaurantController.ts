@@ -157,8 +157,7 @@ class RestaurantRegistration {
             status,
             restaurantId: resId
         })
-        console.log("error");
-        throw new Error("try")
+
 
         newitem.save();
         res.status(200).json({ data: "Item added sucessfully" })

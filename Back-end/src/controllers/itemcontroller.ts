@@ -40,7 +40,7 @@ class itemcontroller {
         const userId = req.user.id;
         const { foodId } = req.params;
 
-        const updatefood: any = await food.findById(foodId);
+        const updatefood = await food.findById(foodId);
         if (!updatefood) {
             return res.status(404).json({ data: "food not found" });
         }
@@ -49,11 +49,27 @@ class itemcontroller {
         }
 
         const updateDish = req.body;
-        for (const property in updateDish) {
-            updatefood[property] = updateDish[property];
-        }
-        updatefood.save();
+        await food.findByIdAndUpdate(foodId, { ...updateDish })
+        // for (const property in updateDish) {
+        //     updatefood[property] = updateDish[property];
+        // }
+        // updatefood.save();
         return res.status(200).json({ data: "Food Update Successfully" });
+    }
+
+    public deleteitem = async (req: requestInterface, res: Response) => {
+        const { foodId } = req.params;
+        const userId = req.user.id;
+        const updatefood = await food.findById(foodId);
+        if (!updatefood) {
+            return res.status(404).json({ data: "food not found" });
+        }
+        if (updatefood.restaurantId.toString() !== userId) {
+            return res.status(404).json({ data: "food not Exist for this account" });
+        }
+        await Restaurant.findByIdAndUpdate(userId, { $pull: { items: foodId } })
+        await food.findByIdAndDelete(foodId);
+        return res.status(200).json({ data: "Item Deleted Successfully" });
     }
 }
 

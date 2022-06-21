@@ -32,6 +32,7 @@ constructor() {
     this.restaurantVerification();
     this.cart();
     this.restaurant();
+    // this.delete()
 }
 
 private root() {
@@ -42,11 +43,14 @@ private root() {
 
 private registration() {
     this.router.route('/registration').post(UserValidation.validateUser, registerUser.registration)
+    this.router.route('/userDelete/:id').delete(auth.isLoggenin,auth.isUser,registerUser.userDelete)
+    this.router.route('/userUpdate/:id').post(auth.isLoggenin,auth.isUser,registerUser.userUpdate)
 }
 
 private login() {
     this.router.route('/login').post(registerUser.login);
 }
+
 
 private restaurantRegistration() {
     this.router.route('/restaurantRegistration').post(RestaurantValidation.validateRestaurant, registerRestaurant.restaurantRegistration)

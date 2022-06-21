@@ -5,67 +5,58 @@ import userDoc from "../interface/userInterface";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
-import cartrequestInterface from "../interface/cartrequestInterface"
-
+import requestInterface from "../interface/requestInterface";
 
 class Registration {
 
-    public registration = async (req: cartrequestInterface,res: Response) => {
+    public registration = async (req:requestInterface ,res: Response) => {
 
         const hashPassword = await bcrypt.hash(req.body.password, 10)
         try {
-            const { email, name, password } = req.body;
+            const { email, name, password ,address , phone} = req.body;
+            const data = req.body;
 
-            const cartfound = await cart.findById(req.cart);
-            console.log(cartfound)
-
-            const doc: userDoc = new User({
+            const doc: userDoc = new User({ 
+                // ...data
                 name: name,
                 email: email,
                 password: hashPassword,
-                cartId:cartfound,
+                address : address,
+                phone : phone
             });
-
-            console.log(doc,"doc")
-            doc.save()
-            // try {
-            //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
-            //     try {
-            //         let mailTransporter = nodemailer.createTransport({
-            //             service: 'gmail',
-            //             auth: {
-            //                 user: process.env.EMAIL,
-            //                 pass: process.env.EMAIL_PASSWORD
-            //             }
-            //         });
-            //         let mailDetails = {
-            //             from: process.env.EMAIL,
-            //             to: email,
-            //             subject: 'Verification of your account',
-            //             html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyEMail/${a}           
-            //         <h3 style="text-align: center;">Thank You</h3>`
-            //         };
-            //         mailTransporter.sendMail(mailDetails, function (err, data) {
-            //             if (err) {
-            //                 console.log(err)
-            //             } else {
-            //                 console.log('Email sent successfully');
-            //             }
-            //         });
-            //     } catch (error) {
-            //         console.log("error while sending mail", error);
-            //     }
-            // }
-            // catch (error) {
-            //     console.log("error in token");
-            // }
-
-            res.send("Please Verify Your E-Mail ID!!!")
+            // console.log(doc)
+            doc.save();
+            res.send(doc)
         } catch (error) {
             console.log(error,"error out");
 
         }
 
+    }
+
+    public userDelete = async(req:Request,res:Response)=>{
+        const {id} = req.params;
+        await User.findByIdAndDelete(id)
+        res.status(200).json("your data is delete")
+        console.log("your data is delete",id)
+    }
+
+    public userUpdate = async (req: Request, res: Response) => {
+
+        const {id} = req.params;
+        const data = req.body
+        // console.log(resId);
+        // console.log(data);        
+        
+        const userdata=await User.findById(id)
+        // console.log(userdata);
+        
+        const bodydata=req.body;
+        const updata=await User.findByIdAndUpdate(id,{...bodydata})
+        console.log(updata);
+        
+
+        res.status(200).json({data:"Item updated sucessfully"})
     }
 
     public verifyRegistration = async (req: Request, res: Response) => {
@@ -110,16 +101,19 @@ class Registration {
                 if (result.email === email && isMatch) {
 
                     const a = {
-                        name: result.name,
                         email: result.email,
+                        name: result.name,
+                        password:result.password,
+                        address:result.address,
+                        phone:result.phone,
                         id: result._id,
                         user: "user"
                     }
-
+                    console.log(a)
                     const token = jwt.sign(a, process.env.SECRET_KEY as string);
                     res.status(200).cookie("AuthToken", token).set("AuthToken", token).json({ status: `<h1> You have Successfully Logged in!!!!!</h1>` });
 
-                }
+                }   
 
                 else if (isMatch === false) {
                     res.send("Invalid Password!!!")

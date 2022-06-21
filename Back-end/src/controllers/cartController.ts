@@ -39,8 +39,8 @@ class cartController{
                 userId:userfound,                
                 totalPrice:foodPrice,
             });
-
-           await CartDetails.save()  
+            // cart.foodId.push()
+    
            await cart.save()  
            .then((data:any)=> {
             // console.log(data);
@@ -55,9 +55,7 @@ class cartController{
 
        });
     }
-
+        
 };
 
 export default cartController;
-
-

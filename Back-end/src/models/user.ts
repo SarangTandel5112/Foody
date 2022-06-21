@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema ({
         ref:"cart",
         // default: "o",
     },
+    address: { type: String, required: true },
+    phone: { type: String, required: true, unique: true },
 
 });
 

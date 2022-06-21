@@ -6,6 +6,11 @@ interface userDoc extends mongoose.Document {
     name: String,
     password: String,
     cartId: String,
+    address : String,
+    phone :{
+        type:Number,
+        unique : true, 
+    } 
 }
 
 

@@ -3,11 +3,12 @@ import userValidation from '../validations/userValidation';
 import Registration from '../controllers/userController';
 import restaurantValidation from '../validations/restaurantValidation';
 import RestaurantRegistration from '../controllers/restaurantController';
+import isauth from '../middleware/isauth'
 
 
 const registerUser = new Registration();
 const UserValidation = new userValidation();
-
+const auth=new isauth();
 const registerRestaurant = new RestaurantRegistration();
 const RestaurantValidation = new restaurantValidation();
 
@@ -24,6 +25,7 @@ constructor() {
     this.restaurantLogin();
     this.userVerification();
     this.restaurantVerification();
+    this.restaurant();
 }
 
 private root() {
@@ -45,7 +47,7 @@ private restaurantRegistration() {
 }
 
 private restaurantLogin() {
-    this.router.route('/hotelLogin').post(registerRestaurant.restaurantLogin);
+    this.router.route('/hotellogin').post(registerRestaurant.restaurantLogin);
 }
 
 private userVerification() {
@@ -54,6 +56,10 @@ private userVerification() {
 
 private restaurantVerification() {
     this.router.route('/verifyRestaurantEMail/:id').get(registerRestaurant.verifyRestaurantRegistration);
+}
+
+private restaurant(){
+    this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,registerRestaurant.additem)
 }
 
 }

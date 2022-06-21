@@ -1,59 +1,68 @@
 import express, { Request, Response } from "express";
 import User from "../models/user";
+import cart from "../models/cart";
 import userDoc from "../interface/userInterface";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
+import cartrequestInterface from "../interface/cartrequestInterface"
+
 
 class Registration {
 
-    public registration = async (req: Request, res: Response) => {
+    public registration = async (req: cartrequestInterface,res: Response) => {
 
         const hashPassword = await bcrypt.hash(req.body.password, 10)
         try {
             const { email, name, password } = req.body;
 
+            const cartfound = await cart.findById(req.cart);
+            console.log(cartfound)
+
             const doc: userDoc = new User({
                 name: name,
                 email: email,
-                password: hashPassword
+                password: hashPassword,
+                cartId:cartfound,
             });
 
-            try {
-                const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
-                try {
-                    let mailTransporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            user: process.env.EMAIL,
-                            pass: process.env.EMAIL_PASSWORD
-                        }
-                    });
-                    let mailDetails = {
-                        from: process.env.EMAIL,
-                        to: email,
-                        subject: 'Verification of your account',
-                        html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyEMail/${a}           
-                    <h3 style="text-align: center;">Thank You</h3>`
-                    };
-                    mailTransporter.sendMail(mailDetails, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            console.log('Email sent successfully');
-                        }
-                    });
-                } catch (error) {
-                    console.log("error while sending mail", error);
-                }
-            }
-            catch (error) {
-                console.log("error in token");
-            }
+            console.log(doc,"doc")
+            doc.save()
+            // try {
+            //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
+            //     try {
+            //         let mailTransporter = nodemailer.createTransport({
+            //             service: 'gmail',
+            //             auth: {
+            //                 user: process.env.EMAIL,
+            //                 pass: process.env.EMAIL_PASSWORD
+            //             }
+            //         });
+            //         let mailDetails = {
+            //             from: process.env.EMAIL,
+            //             to: email,
+            //             subject: 'Verification of your account',
+            //             html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyEMail/${a}           
+            //         <h3 style="text-align: center;">Thank You</h3>`
+            //         };
+            //         mailTransporter.sendMail(mailDetails, function (err, data) {
+            //             if (err) {
+            //                 console.log(err)
+            //             } else {
+            //                 console.log('Email sent successfully');
+            //             }
+            //         });
+            //     } catch (error) {
+            //         console.log("error while sending mail", error);
+            //     }
+            // }
+            // catch (error) {
+            //     console.log("error in token");
+            // }
 
             res.send("Please Verify Your E-Mail ID!!!")
         } catch (error) {
-            console.log(error);
+            console.log(error,"error out");
 
         }
 
@@ -108,7 +117,7 @@ class Registration {
                     }
 
                     const token = jwt.sign(a, process.env.SECRET_KEY as string);
-                    res.status(200).cookie("Auth-Token", token).set("Auth-Token", token).json({ status: `<h1> You have Successfully Logged in!!!!!</h1>` });
+                    res.status(200).cookie("AuthToken", token).set("AuthToken", token).json({ status: `<h1> You have Successfully Logged in!!!!!</h1>` });
 
                 }
 

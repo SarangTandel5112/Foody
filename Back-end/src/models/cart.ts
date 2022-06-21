@@ -4,20 +4,21 @@ import cartDoc from "../interface/cartInterface";
 
 const cartSchema = new mongoose.Schema ({
    
-    foodId: [{
+    cartDetailsId: [{
         type: Schema.Types.ObjectId,
-        ref: "food",
+        ref: "cartDetails",
     }],
     userId: {
         type: Schema.Types.ObjectId,
         ref:"User",
     },
     totalPrice: {
-        type:Number,
-        default:0,
+        type:String,
         required: true,
 
     }
+},{
+    timestamps:true
 });
 
 

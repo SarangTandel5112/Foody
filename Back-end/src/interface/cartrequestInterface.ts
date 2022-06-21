@@ -2,8 +2,7 @@ import {Request} from 'express';
 
 interface requestInterface extends Request{
 
-    user?: any;
-
+    cart?: any;
     
 }
 

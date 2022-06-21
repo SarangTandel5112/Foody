@@ -67,9 +67,10 @@ private restaurantVerification() {
 
 
 private cart() {
-    this.router.route('/addCart/:id/:uid').post(cart.addCart);
+    this.router.route('/addCart/:foodid').post(auth.isLoggenin,auth.isUser,cart.addCart);
 }
 private restaurant(){
+    this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,registerRestaurant.additem)
 }
 }
 

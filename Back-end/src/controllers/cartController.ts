@@ -1,31 +1,50 @@
 import express, {Request, Response} from "express";
-import restaurantDoc from "../interface/cartInterface";
-import bcrypt from 'bcrypt';
-import jwt  from "jsonwebtoken";
-import cookieparser from "cookie-parser";
-import nodemailer from 'nodemailer';
 import cartModel from "../models/cart";
 import food from "../models/food";
 import user from "../models/user";
-
+import cartDetails from "../models/cartDetails";
+import requestInterface from "../interface/requestInterface";
+import foodinterface from "../interface/foodInterface";
+import cartDetailsInterface from "../interface/cartDetailsInterface";
 
 class cartController{
     // ------------ AddCart -----------------//
-    public addCart = async(req: Request, res: Response) => {    
+    public addCart = async(req: requestInterface, res: Response) => {    
              
-           const { userId,totalPrice } = req.body;
-           const food = req.params.id;
-            const {uid}=req.params;
+            const { totalPrice,quantity,description } = req.body;
+            const {foodid} = req.params;
+
+              console.log(foodid);
+            // console.log(req.user);
+            const userfound=await user.findById(req.user.id);
+            // console.log(userfound);
+
+            const foodfound=await food.findById(foodid);
+           // console.log(foodfound);
+
+            const foodPrice = await food.findById(foodid).select("price");
+            if(foodPrice){
+                console.log(foodPrice.price);
+            }
+
+            const CartDetails = new cartDetails({
+                foodId:foodid,
+                quantity:quantity,
+                description:description,
+            })
+
+
             const cart = new cartModel({
-                foodId:food,
-                userId:userId,
-                totalPrice:totalPrice
+                cartDetails: CartDetails,
+                userId:userfound,                
+                totalPrice:foodPrice,
             });
-            cart.foodId.push(uid)
-    
+
+           await CartDetails.save()  
            await cart.save()  
            .then((data:any)=> {
             // console.log(data);
+                
                res.status(200).send(data);
            })
            .catch((err:any)=> {

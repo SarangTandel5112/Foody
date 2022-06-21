@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 import cookieparser from "cookie-parser";
 import nodemailer from 'nodemailer';
 import Restaurant from "../models/restaurant";
-import food from "../models/food";
 import requestInterface from "../interface/requestInterface";
 
 class RestaurantRegistration {
@@ -22,39 +21,40 @@ class RestaurantRegistration {
                 email: email,
                 password: hashPassword
             });
+            doc.save()
 
-            try {
-                const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
-                try {
-                    let mailTransporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            user: process.env.EMAIL,
-                            pass: process.env.EMAIL_PASSWORD
-                        }
-                    });
-                    let mailDetails = {
-                        from: process.env.EMAIL,
-                        to: email,
-                        subject: 'Verification of your account',
-                        html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyRestaurantEMail/${a}           
-                    <h3 style="text-align: center;">Thank You</h3>`
-                    };
-                    mailTransporter.sendMail(mailDetails, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            console.log('Email sent successfully');
-                        }
-                    });
-                } catch (error) {
-                    console.log("error while sending mail", error);
-                }
-            }
+            // try {
+            //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
+            //     try {
+            //         let mailTransporter = nodemailer.createTransport({
+            //             service: 'gmail',
+            //             auth: {
+            //                 user: process.env.EMAIL,
+            //                 pass: process.env.EMAIL_PASSWORD
+            //             }
+            //         });
+            //         let mailDetails = {
+            //             from: process.env.EMAIL,
+            //             to: email,
+            //             subject: 'Verification of your account',
+            //             html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyRestaurantEMail/${a}           
+            //         <h3 style="text-align: center;">Thank You</h3>`
+            //         };
+            //         mailTransporter.sendMail(mailDetails, function (err, data) {
+            //             if (err) {
+            //                 console.log(err)
+            //             } else {
+            //                 console.log('Email sent successfully');
+            //             }
+            //         });
+            //     } catch (error) {
+            //         console.log("error while sending mail", error);
+            //     }
+            // }
 
-            catch (error) {
-                console.log("error in token");
-            }
+            // catch (error) {
+            //     console.log("error in token");
+            // }
             res.send(`${RestaurantName}, Please Verify Your E-Mail ID!!!`)
         } catch (error) {
             console.log(error);
@@ -134,33 +134,7 @@ class RestaurantRegistration {
 
     public additem = async (req: requestInterface, res: Response) => {
 
-        const resId = req.user.id;
-        const { name, description, price, status } = req.body;
-
-        if (!name) {
-            return res.status(404).json({ data: "name not found" })
-        }
-        if (!description) {
-            return res.status(404).json({ data: "description not found" })
-        }
-        if (!price) {
-            return res.status(404).json({ data: "price not found" })
-        }
-        if (!status) {
-            return res.status(404).json({ data: "status not found" })
-        }
-
-        const newitem = await new food({
-            name,
-            description,
-            price,
-            status,
-            restaurantId: resId
-        })
-
-
-        newitem.save();
-        res.status(200).json({ data: "Item added sucessfully" })
+        
     }
 
 }

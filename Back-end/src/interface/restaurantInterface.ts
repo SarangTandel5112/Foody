@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 
 interface restaurantDoc extends mongoose.Document {
@@ -6,8 +6,7 @@ interface restaurantDoc extends mongoose.Document {
     OwnerName: String,
     email: String,
     password: String,
-    createdAt: Date,
-    updatedAt: Date
+    items: [Types.ObjectId]
 }
 
 

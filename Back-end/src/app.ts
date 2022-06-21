@@ -42,19 +42,3 @@ class app {
 }
 
 export default new app().app;
-
-
-
-
-
-
-
-// const app: express.Application = express();
-// app.use(express.json());
-
-// app.use('/', router);
-
-
-// app.listen(process.env.PORT ,() => {
-//     console.log(`server is listening to ${process.env.PORT}`);
-// })

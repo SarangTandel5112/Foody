@@ -20,7 +20,6 @@ const foodSchema = new mongoose.Schema<foodinterface>({
     },
     rating: {
         type: Number,
-        required: true
     },
     status: {
         type: String,

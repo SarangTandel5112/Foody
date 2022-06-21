@@ -40,5 +40,3 @@ class cartController{
 };
 
 export default cartController;
-
-

@@ -4,7 +4,8 @@ import Routes from './Routes/route';
 import connectDB from './db/connectDB';
 import User from './models/user';
 import cookieparser from 'cookie-parser';
-
+import "express-async-errors";
+import errorhandling from "./log/error"
 
 dotenv.config({path:'/home/sanjay/VSC/zometo/.env'});
 
@@ -19,7 +20,8 @@ class app {
     constructor() {
         this.middleWare();
         this.routes();
-        this.connection();        
+        this.connection();
+        this.app.use(errorhandling);
     }
 
     private middleWare(): void {

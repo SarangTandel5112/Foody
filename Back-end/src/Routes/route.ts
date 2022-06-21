@@ -6,6 +6,7 @@ import RestaurantRegistration from '../controllers/restaurantController';
 import cartController from '../controllers/cartController';
 
 import isauth from '../middleware/isauth'
+import itemcontroller from '../controllers/itemcontroller';
 
 
 const registerUser = new Registration();
@@ -13,6 +14,7 @@ const UserValidation = new userValidation();
 const auth=new isauth();
 const registerRestaurant = new RestaurantRegistration();
 const RestaurantValidation = new restaurantValidation();
+const Itemcontroller=new itemcontroller();
 
 const cart = new  cartController();
 
@@ -74,7 +76,10 @@ private cart() {
     this.router.route('/addCart/:foodid').post(auth.isLoggenin,auth.isUser,cart.addCart);
 }
 private restaurant(){
-    this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,registerRestaurant.additem)
+    this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);
+    this.router.route('/updateitem/:foodId').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.updateitem);
+    this.router.route('/deleteitem/:foodId').delete(auth.isLoggenin,auth.isRestaurant,Itemcontroller.deleteitem);
+
 }
 }
 

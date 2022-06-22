@@ -1,5 +1,4 @@
 import { Response } from "express";
-import foodinterface from "../interface/food";
 import requestInterface from "../interface/requestInterface";
 import food from "../models/food";
 import Restaurant from "../models/restaurant";
@@ -11,15 +10,13 @@ class itemcontroller {
         const { foodId } = req.params;
         const userId = req.user.id;
         const fooddata = await food.findById(foodId).select(["-createdAt", "-updatedAt"])
-        console.log(fooddata);
         if (!fooddata) {
             return res.status(404).json({ data: "food not found" });
         }
         if (fooddata.restaurantId.toString() !== userId) {
             return res.status(404).json({ data: "food not Exist for this account" });
         }
-
-
+        return res.status(200).json({ data: fooddata })
     }
 
     public additem = async (req: requestInterface, res: Response) => {

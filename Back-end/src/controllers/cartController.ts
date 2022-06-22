@@ -13,11 +13,19 @@ class cartController {
         const { quantity, description } = req.body;
         const { foodid } = req.params;
 
+        if (!quantity) {
+            return res.status(404).json({ data: "Please select quantity" })
+        }
+
         const userfound = await user.findById(req.user.id);
+
         const foodfound = await food.findById(foodid);
 
-        if (userfound) {
+        if (!foodfound) {
+            return res.status(404).json({ data: "food not found" })
+        }
 
+        if (userfound) {
             const newcartdetails = new cartDetails({
                 foodId: foodid,
                 quantity: quantity,
@@ -35,6 +43,7 @@ class cartController {
                 console.log(cart1)
             }
 
+            return res.status(200).json({ data: "Item Added to cart successfully" })
         }
     }
 }

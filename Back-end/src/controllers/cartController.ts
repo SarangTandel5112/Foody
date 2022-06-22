@@ -24,11 +24,12 @@ class cartController {
                 description: description,
                 cartId: userfound.cartId
             })
-            newcartdetails.save()
-            if (foodfound) {
+            newcartdetails.save();
+            const usercart = await cart.findById(userfound.cartId);
+            if (foodfound && usercart) {
                 const cart1 = await cart.findByIdAndUpdate(
                     userfound.cartId,
-                    { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: +foodfound.price } }, { new: true })
+                    { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: Number(usercart.totalPrice) + Number(foodfound.price) } }, { new: true })
             }
         }
     }

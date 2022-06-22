@@ -7,6 +7,21 @@ import Restaurant from "../models/restaurant";
 
 class itemcontroller {
 
+    public viewItem = async (req: requestInterface, res: Response) => {
+        const { foodId } = req.params;
+        const userId = req.user.id;
+        const fooddata = await food.findById(foodId).select(["-createdAt", "-updatedAt"])
+        console.log(fooddata);
+        if (!fooddata) {
+            return res.status(404).json({ data: "food not found" });
+        }
+        if (fooddata.restaurantId.toString() !== userId) {
+            return res.status(404).json({ data: "food not Exist for this account" });
+        }
+
+
+    }
+
     public additem = async (req: requestInterface, res: Response) => {
         const resId = req.user.id;
         const { name, description, price, status } = req.body;

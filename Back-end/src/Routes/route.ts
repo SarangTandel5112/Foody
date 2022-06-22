@@ -61,6 +61,7 @@ private restaurantVerification() {
 }
 
 private restaurant(){
+    this.router.route('/viewitem/:foodId').get(auth.isLoggenin,auth.isRestaurant,Itemcontroller.viewItem);
     this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);
     this.router.route('/updateitem/:foodId').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.updateitem);
     this.router.route('/deleteitem/:foodId').delete(auth.isLoggenin,auth.isRestaurant,Itemcontroller.deleteitem);

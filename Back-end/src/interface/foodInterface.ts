@@ -8,6 +8,7 @@ interface foodinterface extends mongoose.Document {
     price:String,
     rating:Number,
     status:String,
-}
+};
+
 
 export default foodinterface;

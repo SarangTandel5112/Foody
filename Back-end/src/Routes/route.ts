@@ -3,6 +3,8 @@ import userValidation from '../validations/userValidation';
 import Registration from '../controllers/userController';
 import restaurantValidation from '../validations/restaurantValidation';
 import RestaurantRegistration from '../controllers/restaurantController';
+import cartController from '../controllers/cartController';
+
 import isauth from '../middleware/isauth'
 import itemcontroller from '../controllers/itemcontroller';
 
@@ -13,6 +15,9 @@ const auth=new isauth();
 const registerRestaurant = new RestaurantRegistration();
 const RestaurantValidation = new restaurantValidation();
 const Itemcontroller=new itemcontroller();
+
+const cart = new  cartController();
+
 
 class Routes {
     
@@ -27,7 +32,9 @@ constructor() {
     this.restaurantLogin();
     this.userVerification();
     this.restaurantVerification();
+    this.cart();
     this.restaurant();
+    // this.delete()
 }
 
 private root() {
@@ -38,11 +45,14 @@ private root() {
 
 private registration() {
     this.router.route('/registration').post(UserValidation.validateUser, registerUser.registration)
+    this.router.route('/userDelete/:id').delete(auth.isLoggenin,auth.isUser,registerUser.userDelete)
+    this.router.route('/userUpdate/:id').post(auth.isLoggenin,auth.isUser,registerUser.userUpdate)
 }
 
 private login() {
     this.router.route('/login').post(registerUser.login);
 }
+
 
 private restaurantRegistration() {
     this.router.route('/restaurantRegistration').post(RestaurantValidation.validateRestaurant, registerRestaurant.restaurantRegistration)
@@ -60,6 +70,11 @@ private restaurantVerification() {
     this.router.route('/verifyRestaurantEMail/:id').get(registerRestaurant.verifyRestaurantRegistration);
 }
 
+
+
+private cart() {
+    this.router.route('/addCart/:foodid').post(auth.isLoggenin,auth.isUser,cart.addCart);
+}
 private restaurant(){
     this.router.route('/viewitem/:foodId').get(auth.isLoggenin,auth.isRestaurant,Itemcontroller.viewItem);
     this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);
@@ -67,8 +82,8 @@ private restaurant(){
     this.router.route('/deleteitem/:foodId').delete(auth.isLoggenin,auth.isRestaurant,Itemcontroller.deleteitem);
 
 }
-
 }
+
 
 export default Routes;
 

@@ -9,7 +9,7 @@ class connectDB {
         } as ConnectionOptions).then( () => {
             console.log("Database has been Connected......");            
         }).catch((error) => {
-            console.log("error in database connection......");            
+            console.log("error in database connection......" + error);            
         })
     }
 }

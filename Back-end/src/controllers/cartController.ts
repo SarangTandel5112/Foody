@@ -35,20 +35,9 @@ class cartController{
                 
                 const cart1=await cart.findByIdAndUpdate(
                     userfound.cartId,
-                    {$push:{cartDetailsId:newcartdetails._id}},{new:true})
-                // console.log(cart1);
-                    
+                    {$push:{cartDetailsId:newcartdetails._id},$set:{totalPrice:+foodfound.price}},{new:true})
+                 console.log(cart1);
             }
-
-    //         if(foodfound){
-    //             // console.log(foodfound.price);
-
-    //             const cart2=await cart.findByIdAndUpdate(
-    //                 foodfound.price,
-    //                 {$push:{c:newcartdetails._id}},{new:true})
-    //             console.log(cart1);
-    //         }
-    // }
         
 };
 }

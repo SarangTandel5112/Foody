@@ -1,5 +1,5 @@
 import { Response } from "express";
-import foodinterface from "../interface/food";
+// import foodinterface from "../interface/food";
 import requestInterface from "../interface/requestInterface";
 import food from "../models/food";
 import Restaurant from "../models/restaurant";

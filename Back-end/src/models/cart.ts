@@ -4,10 +4,10 @@ import cartDoc from "../interface/cartInterface";
 
 const cartSchema = new mongoose.Schema ({
    
-    cartDetailsId: [{
+    cartDetailsId:{
         type: Schema.Types.ObjectId,
         ref: "cartDetails",
-    }],
+    },
     userId: {
         type: Schema.Types.ObjectId,
         ref:"User",

@@ -1,4 +1,4 @@
-import express, {Request, Response} from "express";
+import express, { Request, Response } from "express";
 import food from "../models/food";
 import user from "../models/user";
 import cartDetails from "../models/cartDetails";
@@ -6,40 +6,32 @@ import requestInterface from "../interface/requestInterface";
 
 import cart from "../models/cart";
 
-class cartController{
+class cartController {
     // ------------ AddCart -----------------//
-    public addCart = async(req: requestInterface, res: Response) => {    
-             
-            const { quantity,description } = req.body;
-            const {foodid} = req.params;
+    public addCart = async (req: requestInterface, res: Response) => {
 
-            //   console.log(foodid);
-            // console.log(req.user);
-            const userfound=await user.findById(req.user.id);
-            if(userfound){
-                // console.log(userfound.cartId);
-            }
+        const { quantity, description } = req.body;
+        const { foodid } = req.params;
 
-            const foodfound=await food.findById(foodid);
-            
+        const userfound = await user.findById(req.user.id);
+        const foodfound = await food.findById(foodid);
 
-            const newcartdetails=new cartDetails({
-                foodId:foodid,
-                quantity:quantity,
-                description:description,
+        if (userfound) {
+
+            const newcartdetails = new cartDetails({
+                foodId: foodid,
+                quantity: quantity,
+                description: description,
+                cartId: userfound.cartId
             })
             newcartdetails.save()
-
-            if(userfound && foodfound){
-                
-                
-                const cart1=await cart.findByIdAndUpdate(
+            if (foodfound) {
+                const cart1 = await cart.findByIdAndUpdate(
                     userfound.cartId,
-                    {$push:{cartDetailsId:newcartdetails._id},$set:{totalPrice:+foodfound.price}},{new:true})
-                 console.log(cart1);
+                    { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: +foodfound.price } }, { new: true })
             }
-        
-};
+        }
+    }
 }
 
 export default cartController;

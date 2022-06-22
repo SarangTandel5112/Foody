@@ -4,24 +4,23 @@ import cartDoc from "../interface/cartInterface";
 
 const cartSchema = new mongoose.Schema ({
    
-    cartDetailsId:{
+    cartDetailsId:[{
         type: Schema.Types.ObjectId,
         ref: "cartDetails",
-    },
+    }],
     userId: {
         type: Schema.Types.ObjectId,
         ref:"User",
     },
     totalPrice: {
-        type:String,
+        type:Number,
+        default:0,
         required: true,
 
     }
-},{
-    timestamps:true
 });
 
 
-const Restaurant = mongoose.model<cartDoc>("cart",cartSchema);
+const cart = mongoose.model<cartDoc>("cart",cartSchema);
 
-export default Restaurant;
+export default cart;

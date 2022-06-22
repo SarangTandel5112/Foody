@@ -1,61 +1,56 @@
 import express, {Request, Response} from "express";
-import cartModel from "../models/cart";
 import food from "../models/food";
 import user from "../models/user";
 import cartDetails from "../models/cartDetails";
 import requestInterface from "../interface/requestInterface";
-import foodinterface from "../interface/foodInterface";
-import cartDetailsInterface from "../interface/cartDetailsInterface";
+
+import cart from "../models/cart";
 
 class cartController{
     // ------------ AddCart -----------------//
     public addCart = async(req: requestInterface, res: Response) => {    
              
-            const { totalPrice,quantity,description } = req.body;
+            const { quantity,description } = req.body;
             const {foodid} = req.params;
 
-              console.log(foodid);
+            //   console.log(foodid);
             // console.log(req.user);
             const userfound=await user.findById(req.user.id);
-            // console.log(userfound);
-
-            const foodfound=await food.findById(foodid);
-           // console.log(foodfound);
-
-            const foodPrice = await food.findById(foodid).select("price");
-            if(foodPrice){
-                console.log(foodPrice.price);
+            if(userfound){
+                // console.log(userfound.cartId);
             }
 
-            const CartDetails = new cartDetails({
+            const foodfound=await food.findById(foodid);
+            
+
+            const newcartdetails=new cartDetails({
                 foodId:foodid,
                 quantity:quantity,
                 description:description,
             })
+            newcartdetails.save()
 
-
-            const cart = new cartModel({
-                cartDetails: CartDetails,
-                userId:userfound,                
-                totalPrice:foodPrice,
-            });
-            // cart.foodId.push()
-    
-           await cart.save()  
-           .then((data:any)=> {
-            // console.log(data);
+            if(userfound && foodfound){
                 
-               res.status(200).send(data);
-           })
-           .catch((err:any)=> {
-           res.status(500).send({
-               message:
-               err.message || "Some error occurred while creating the Cart."
-           });
+                
+                const cart1=await cart.findByIdAndUpdate(
+                    userfound.cartId,
+                    {$push:{cartDetailsId:newcartdetails._id}},{new:true})
+                // console.log(cart1);
+                    
+            }
 
-       });
-    }
+    //         if(foodfound){
+    //             // console.log(foodfound.price);
+
+    //             const cart2=await cart.findByIdAndUpdate(
+    //                 foodfound.price,
+    //                 {$push:{c:newcartdetails._id}},{new:true})
+    //             console.log(cart1);
+    //         }
+    // }
         
 };
+}
 
 export default cartController;

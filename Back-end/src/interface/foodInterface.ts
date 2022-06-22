@@ -5,7 +5,7 @@ interface foodinterface extends mongoose.Document {
     name:String,
     description:String,
     restaurantId:[Types.ObjectId],
-    price:String,
+    price:Number,
     rating:Number,
     status:String,
 };

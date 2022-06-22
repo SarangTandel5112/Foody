@@ -14,7 +14,7 @@ class Registration {
         const hashPassword = await bcrypt.hash(req.body.password, 10)
         try {
             const { email, name, password ,address , phone} = req.body;
-            const data = req.body;
+            const data = req.body;            
 
             const doc: userDoc = new User({ 
                 // ...data
@@ -24,6 +24,14 @@ class Registration {
                 address : address,
                 phone : phone
             });
+
+            const usercart=new cart({
+                userId:doc._id,
+            })
+            
+            usercart.save();
+            doc.cartId=usercart._id;
+
             // console.log(doc)
             doc.save();
             res.send(doc)

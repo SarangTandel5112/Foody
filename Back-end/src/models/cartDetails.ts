@@ -4,10 +4,10 @@ import cartDetails from "../interface/cartDetailsInterface";
 
 const cartDetailsSchema = new mongoose.Schema ({
    
-    foodId: [{
+    foodId: {
         type: Schema.Types.ObjectId,
         ref: "food",
-    }],
+    },
     quantity:{ 
         type: Number, required: true
     },
@@ -19,6 +19,6 @@ const cartDetailsSchema = new mongoose.Schema ({
 });
 
 
-const Restaurant = mongoose.model<cartDetails>("cartDetails",cartDetailsSchema);
+const cartDetails = mongoose.model<cartDetails>("cartDetails",cartDetailsSchema);
 
-export default Restaurant;
+export default cartDetails;

@@ -17,6 +17,13 @@ function createUser(sequelize: any, DataTypes: any) {
         },
         phone: {
             type: DataTypes.STRING,
+        },
+        cartId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'carts',
+                key: 'id',
+            }
         }
     })
     return Users;

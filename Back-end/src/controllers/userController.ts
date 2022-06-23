@@ -29,10 +29,11 @@ class Registration {
         // });
 
         const adduser = await User.create({ name, email, password: hashPassword, address, phone })
-        // console.log(adduser.id);
+        console.log(adduser);
         const addcart = await Cart.create()
-        adduser.cartId = addcart.id;
-        adduser.save();
+        await adduser.setCart(addcart)
+        // adduser.cartId = addcart.id;
+        // adduser.save();
         res.status(200).json({ data: adduser })
 
         // const usercart=new cart({
@@ -52,14 +53,15 @@ class Registration {
     public viewuser = async (req: Request, res: Response) => {
         const { userId } = req.params;
         console.log(userId);
-        // const user = await User.findAll({
-        //     include: [{
-        //         model: Cart
-        //     }]
-        // })
-        // console.log(user);
-        // res.json({ data: user })
-        const user = await User.destroy({ where: { id: userId } })
+        const user = await User.findAll({
+            include: [{
+                model: Cart
+            }]
+        })
+        console.log(user);
+        res.json({ data: user })
+        // const user = await User.destroy({ where: { id: userId } })
+        // res.send("Deleted Successfully")
     }
 
     public userDelete = async (req: Request, res: Response) => {

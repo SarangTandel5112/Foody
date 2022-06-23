@@ -18,14 +18,14 @@ function createUser(sequelize: any, DataTypes: any) {
         phone: {
             type: DataTypes.STRING,
         },
-        cartId: {
-            type: DataTypes.INTEGER,
-            onDelete: "CASCADE",
-            references: {
-                model: 'carts',
-                key: 'id',
-            }
-        }
+        // cartId: {
+        //     type: DataTypes.INTEGER,
+        //     onDelete: "CASCADE",
+        //     references: {
+        //         model: 'carts',
+        //         key: 'id',
+        //     }
+        // }
     })
     return Users;
 }

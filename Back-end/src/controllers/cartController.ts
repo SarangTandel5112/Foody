@@ -2,8 +2,8 @@ import express, { Request, Response } from "express";
 import food from "../models/food";
 import user from "../models/user";
 import cartDetails from "../models/cartDetails";
+import cart from "../models/cart"
 import requestInterface from "../interface/requestInterface";
-import cart from "../models/cart";
 import User from "../models/user";
 
 class cartController {
@@ -19,6 +19,7 @@ class cartController {
         }
 
     }
+
 
     public addCart = async (req: requestInterface, res: Response) => {
 

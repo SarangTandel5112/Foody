@@ -51,6 +51,7 @@ private registration() {
 
 private login() {
     this.router.route('/login').post(registerUser.login);
+    this.router.route('/googeAuth').post(registerUser.googleAuth);
 }
 
 

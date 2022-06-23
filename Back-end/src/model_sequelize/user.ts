@@ -20,6 +20,7 @@ function createUser(sequelize: any, DataTypes: any) {
         },
         cartId: {
             type: DataTypes.INTEGER,
+            onDelete: "CASCADE",
             references: {
                 model: 'carts',
                 key: 'id',

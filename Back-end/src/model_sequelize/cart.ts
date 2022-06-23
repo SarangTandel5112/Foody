@@ -4,13 +4,13 @@ function createCart(sequelize: any, DataType: any) {
             type: DataType.INTEGER,
             default: 0,
         },
-        cartId: {
-            type: DataType.INTEGER,
-            references: {
-                model: 'users',
-                key: 'id',
-            }
-        }
+        // userId: {
+        //     type: DataType.INTEGER,
+        //     references: {
+        //         model: 'users',
+        //         key: 'id',
+        //     }
+        // }
     })
     return Cart;
 }

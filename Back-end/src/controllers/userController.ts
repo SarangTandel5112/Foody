@@ -29,8 +29,8 @@ class Registration {
         // });
 
         const adduser = await User.create({ name, email, password: hashPassword, address, phone })
-        console.log(adduser.id);
-        const addcart = await Cart.create({ userId: adduser.id })
+        // console.log(adduser.id);
+        const addcart = await Cart.create()
         adduser.cartId = addcart.id;
         adduser.save();
         res.status(200).json({ data: adduser })
@@ -47,6 +47,19 @@ class Registration {
         // doc.save();
         // res.send(doc)
 
+    }
+
+    public viewuser = async (req: Request, res: Response) => {
+        const { userId } = req.params;
+        console.log(userId);
+        // const user = await User.findAll({
+        //     include: [{
+        //         model: Cart
+        //     }]
+        // })
+        // console.log(user);
+        // res.json({ data: user })
+        const user = await User.destroy({ where: { id: userId } })
     }
 
     public userDelete = async (req: Request, res: Response) => {

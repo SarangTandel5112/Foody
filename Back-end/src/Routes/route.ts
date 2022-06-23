@@ -74,6 +74,8 @@ private restaurantVerification() {
 
 private cart() {
     this.router.route('/addCart/:foodid').post(auth.isLoggenin,auth.isUser,cart.addCart);
+    this.router.route('/deleteCart/:cartDetailsId').delete(auth.isLoggenin,auth.isUser,cart.deleteCart);
+
 }
 private restaurant(){
     this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);

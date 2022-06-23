@@ -6,6 +6,18 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import requestInterface from "../interface/requestInterface";
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+import passport from "passport";
+const { OAuth2Client } = require("google-auth-library");
+const CLIENT_ID =
+  "276865150644-oa112rart3bq0qh5khrs8bjecusbfb78.apps.googleusercontent.com";
+const client = new OAuth2Client(CLIENT_ID);
+// import clientid from "../db/googlekey"
+// const clientID = clientid.clientId
+// import clientkey from "../db/googlekey"
+// const clientserceT = clientid.clientSercet
+
+
 
 class Registration {
 
@@ -131,6 +143,36 @@ class Registration {
 
     }
 
+    public googleAuth = async (req: Request, res: Response) => {
+
+        let token = req.body.token;
+        console.log(token);
+        async function verify() {
+          const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+          });
+          const payload = ticket.getPayload();
+          
+          const doc = new User({
+            name:payload.name,
+            email:payload.email,
+            address:payload.picture,
+            phone:payload.exp
+          })
+          doc.save()
+          console.log(doc);
+
+
+        }
+        verify()
+          .then(() => {
+            res.cookie("session-token", token);
+            res.send("success");
+          })
+          .catch(console.error);
+    }
+    
 
 
 

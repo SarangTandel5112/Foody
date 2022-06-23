@@ -51,6 +51,7 @@ private registration() {
 
 private login() {
     this.router.route('/login').post(registerUser.login);
+    this.router.route('/googeAuth').post(registerUser.googleAuth);
 }
 
 
@@ -75,6 +76,7 @@ private restaurantVerification() {
 private cart() {
     this.router.route('/addCart/:foodid').post(auth.isLoggenin,auth.isUser,cart.addCart);
 }
+
 private restaurant(){
     this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);
     this.router.route('/updateitem/:foodId').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.updateitem);

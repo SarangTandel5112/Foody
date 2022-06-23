@@ -6,10 +6,11 @@ import User from './models/user';
 import cookieparser from 'cookie-parser';
 import "express-async-errors";
 import errorhandling from "./log/error"
+import "./db/sequelizeConnect"
 
 dotenv.config();
 
-const db = new connectDB();
+// const db = new connectDB();
 
 const router = new Routes().router
 

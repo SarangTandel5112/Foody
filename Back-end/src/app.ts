@@ -7,13 +7,14 @@ import cookieparser from 'cookie-parser';
 import passport from 'passport';
 import "express-async-errors";
 import errorhandling from "./log/error"
+import "./db/sequelizeConnect"
 
 dotenv.config();
 dotenv.config({path:'/home/sanjay/VSC/zometo/.env'});
 
 
 
-const db = new connectDB();
+// const db = new connectDB();
 
 const router = new Routes().router
 

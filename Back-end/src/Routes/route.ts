@@ -76,12 +76,14 @@ private cart() {
     this.router.route('/addCart/:foodid').post(auth.isLoggenin,auth.isUser,cart.addCart);
     this.router.route('/deleteCart/:cartDetailsId').delete(auth.isLoggenin,auth.isUser,cart.deleteCart);
 
+    this.router.route('/viewCart').post(auth.isLoggenin,auth.isUser,cart.fetchcart);
+    this.router.route('/updateCart/:cartId').post(auth.isLoggenin,auth.isUser,cart.updateCart);
 }
+
 private restaurant(){
     this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);
     this.router.route('/updateitem/:foodId').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.updateitem);
     this.router.route('/deleteitem/:foodId').delete(auth.isLoggenin,auth.isRestaurant,Itemcontroller.deleteitem);
-
 }
 }
 

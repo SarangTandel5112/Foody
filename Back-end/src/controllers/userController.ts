@@ -10,7 +10,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 import passport from "passport";
 const { OAuth2Client } = require("google-auth-library");
 const CLIENT_ID =
-  "276865150644-oa112rart3bq0qh5khrs8bjecusbfb78.apps.googleusercontent.com";
+  "902945112024-3mv4mc5dafkt56jtag0mpesedpe4mpsd.apps.googleusercontent.com";
 const client = new OAuth2Client(CLIENT_ID);
 // import clientid from "../db/googlekey"
 // const clientID = clientid.clientId

@@ -22,6 +22,7 @@ import db from "../db/sequelizeConnect";
 
 const User = db.users
 const Cart = db.cart
+const CartDetails = db.cartdetails
 
 class Registration {
 
@@ -74,6 +75,27 @@ class Registration {
         res.json({ data: user })
         // const user = await User.destroy({ where: { id: userId } })
         // res.send("Deleted Successfully")
+    }
+
+    public addcartdetails = async (req: Request, res: Response) => {
+        // console.log("cartadd");
+        // console.log(req.body);
+        const { quantity, description } = req.body;
+        // console.log(quantity, description);
+        // const cartDetailsData = CartDetails.create({ quantity, description })
+        // console.log(CartDetails);
+        // const user = await User.findAll({
+        //     include: [{
+        //         model: Cart
+        //     }]
+        // })
+
+        const user = await User.findOne({ where: { } })
+
+        // res.send(user.cart)
+        // console.log(user.cart);
+
+
     }
 
     public userDelete = async (req: Request, res: Response) => {

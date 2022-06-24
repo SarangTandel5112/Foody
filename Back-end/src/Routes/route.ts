@@ -46,6 +46,8 @@ private root() {
 private registration() {
     this.router.route('/registration').post(UserValidation.validateUser, registerUser.registration)
     this.router.route('/viewuser/:userId').post(registerUser.viewuser)
+    this.router.route('/viewuser').get(registerUser.viewuser)
+    this.router.route('/viewuser/:userId').get(registerUser.viewuser)
     this.router.route('/addcartdetails').post(registerUser.addcartdetails)
     this.router.route('/userDelete/:id').delete(auth.isLoggenin,auth.isUser,registerUser.userDelete)
     this.router.route('/userUpdate/:id').post(auth.isLoggenin,auth.isUser,registerUser.userUpdate)

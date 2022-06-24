@@ -37,6 +37,16 @@ class cartController {
         if (!foodfound) {
             return res.status(404).json({ data: "food not found" })
         }
+        if (foodfound) {
+           console.log("restaurantId",foodfound.restaurantId);
+        }
+
+        const restaurantfound = foodfound.restaurantId;
+        // console.log(restaurantfound);
+
+        if(!restaurantfound){
+            return res.status(404).json({ data: "restaurant not found" });
+        }
 
         if (userfound) {
             const newcartdetails = new cartDetails({
@@ -46,8 +56,20 @@ class cartController {
                 cartId: userfound.cartId
             })
             newcartdetails.save();
+            // console.log(userfound.cartId);
+            
+        if(restaurantfound){
+            // console.log(restaurantfound); 
+            // console.log(userfound.cartId,"cart");
+                       
+                const restaurant = await cart.findByIdAndUpdate(
+                    userfound.cartId,
+                    { $set: { restaurantId:restaurantfound} }, { new: true });  
+                    // console.log(restaurant);                         
+    
+        }
 
-            const sum=Number(newcartdetails?.quantity)*Number(foodfound?.price)
+            const sum=Number(newcartdetails?.quantity)*Number(foodfound?.price);
 
             const usercart = await cart.findById(userfound.cartId);
             if (foodfound && usercart) {
@@ -55,7 +77,7 @@ class cartController {
                     userfound.cartId,
                     { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: Number(usercart.totalPrice) + Number((sum)) } }, { new: true });
                 
-                console.log(cart1)
+                // console.log(cart1)
             }
 
             return res.status(200).json({ data: "Item Added to cart successfully" })

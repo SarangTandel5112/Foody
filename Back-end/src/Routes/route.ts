@@ -4,7 +4,7 @@ import Registration from '../controllers/userController';
 import restaurantValidation from '../validations/restaurantValidation';
 import RestaurantRegistration from '../controllers/restaurantController';
 import cartController from '../controllers/cartController';
-
+import orderController from '../controllers/orderController';
 import isauth from '../middleware/isauth'
 import itemcontroller from '../controllers/itemcontroller';
 
@@ -17,7 +17,7 @@ const RestaurantValidation = new restaurantValidation();
 const Itemcontroller=new itemcontroller();
 
 const cart = new  cartController();
-
+const order = new orderController();
 
 class Routes {
     
@@ -34,7 +34,7 @@ constructor() {
     this.restaurantVerification();
     this.cart();
     this.restaurant();
-    // this.delete()
+    this.order();
 }
 
 private root() {
@@ -79,6 +79,11 @@ private cart() {
 
     this.router.route('/viewCart').post(auth.isLoggenin,auth.isUser,cart.fetchcart);
     this.router.route('/updateCart/:cartId').post(auth.isLoggenin,auth.isUser,cart.updateCart);
+}
+
+private order() {
+    this.router.route('/addOrder/:cartId').post(auth.isLoggenin,auth.isUser,order.addOrder);
+
 }
 
 private restaurant(){

@@ -2,15 +2,12 @@ import mongoose,{ Types } from "mongoose";
 
 
 interface orderDoc extends mongoose.Document {
-    cartId:Types.ObjectId;
+    cartDetailsId:[Types.ObjectId];
     userId:Types.ObjectId;
-    foodId:Types.ObjectId;
-    quantity:Number;
-    restaurantId:Types.ObjectId; 
+    restaurantId:Types.ObjectId;
+    totalPrice:Number;
     orderDate:Date;
     orderStatus:String;
-    totalPrice:Number;
-
 };
 
 

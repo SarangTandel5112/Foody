@@ -4,38 +4,31 @@ import orderDoc from "../interface/orderInterface";
 
 const orderSchema = new mongoose.Schema({
 
-    cartId:{
+    cartDetailsId: [{
         type: Schema.Types.ObjectId,
-        ref: "cart",
-    },
+        ref: "cartDetails",
+    }],
     userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
-    },
-    foodId:{
-        type: Schema.Types.ObjectId,
-        ref: "food",
-    },
-    quantity:{
-        type: String
     },
     restaurantId: {
         type: Schema.Types.ObjectId,
         ref: "Restaurant",
     },
+    totalPrice: {
+        type: Number,
+        required: true,
+    }, 
     orderDate:{
          type: Date, 
          default:Date.now,
     },
     orderStatus:{ 
         type: String, 
-        enum : ['Deliverd','UnDeliverd'],
-      
+        enum : ['Proccess','Deliverd','UnDeliverd'],
+        default:"Proccess",     
     },
-    totalPrice: {
-        type: Number,
-
-    }
 }, { timestamps: true });
 
 

@@ -1,10 +1,16 @@
 import express, { Request, Response } from "express";
+import { QueryTypes } from "sequelize";
 import food from "../models/food";
 import user from "../models/user";
 import cartDetails from "../models/cartDetails";
 import requestInterface from "../interface/requestInterface";
 import cart from "../models/cart";
-import User from "../models/user";
+// import User from "../models/user";
+import db from "../db/sequelizeConnect";
+
+const User = db.users
+const Cart = db.cart
+const CartDetails = db.cartdetails
 
 class cartController {
     // ------------ AddCart -----------------//
@@ -29,30 +35,35 @@ class cartController {
             return res.status(404).json({ data: "Please select quantity" })
         }
 
-        const userfound = await user.findById(req.user.id);
 
-        const foodfound = await food.findById(foodid);
+        const user = await User.findAll({
+            include: [{
+                model: Cart,
+            }]
+        })
 
-        if (!foodfound) {
-            return res.status(404).json({ data: "food not found" })
-        }
+        //Food find
 
-        if (userfound) {
-            const newcartdetails = new cartDetails({
-                foodId: foodid,
-                quantity: quantity,
-                description: description,
-                cartId: userfound.cartId
-            })
-            newcartdetails.save();
-            const usercart = await cart.findById(userfound.cartId);
-            if (foodfound && usercart) {
-                const cart1 = await cart.findByIdAndUpdate(
-                    userfound.cartId,
-                    { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: Number(usercart.totalPrice) + Number(foodfound.price) } }, { new: true })
-            }
-            return res.status(200).json({ data: "Item Added to cart successfully" })
-        }
+
+        const cartDetailsData = await CartDetails.create({ quantity, description })
+        // console.log(cartDetailsData);
+
+
+        const fId = await db.sequelize.query("select id from carts where userId=1", {
+            type: QueryTypes.SELECT
+        })
+
+        // console.log(fId[0].id);
+
+        const cart = await Cart.findOne({ where: { id: fId[0].id } })
+        // console.log(cart);
+        await cart.addCartdetails(cartDetailsData)
+
+        // console.log(user);
+
+        // const user = await User.findOne({ where: { id: 1} })
+        res.send(cart)
+
     }
 
     public updateCart = async (req: requestInterface, res: Response) => {

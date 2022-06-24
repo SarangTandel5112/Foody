@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { QueryTypes } from "sequelize";
 // import User from "../models/user";
 import cart from "../models/cart";
 import userDoc from "../interface/userInterface";
@@ -7,6 +8,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import requestInterface from "../interface/requestInterface";
 import db from "../db/sequelizeConnect";
+import cartDetails from "../models/cartDetails";
 
 const User = db.users
 const Cart = db.cart
@@ -54,9 +56,9 @@ class Registration {
     public viewuser = async (req: Request, res: Response) => {
         const { userId } = req.params;
         console.log(userId);
-        const user = await User.findAll({
+        const user = await Cart.findAll({
             include: [{
-                model: Cart
+                model: CartDetails
             }]
         })
         console.log(user);
@@ -70,17 +72,30 @@ class Registration {
         // console.log(req.body);
         const { quantity, description } = req.body;
         // console.log(quantity, description);
-        // const cartDetailsData = CartDetails.create({ quantity, description })
-        // console.log(CartDetails);
-        // const user = await User.findAll({
-        //     include: [{
-        //         model: Cart
-        //     }]
-        // })
+        const cartDetailsData = await CartDetails.create({ quantity, description })
+        console.log(cartDetailsData);
+        const user = await User.findAll({
+            include: [{
+                model: Cart,
+                attributes: ["userId"]
+            }]
+        })
 
-        const user = await User.findOne({ where: { } })
+        const fId = await db.sequelize.query("select id from carts where userId=1", {
+            type: QueryTypes.SELECT
+        })
 
-        // res.send(user.cart)
+        // console.log(fId[0].id);
+
+        const cart = await Cart.findOne({ where: { id: fId[0].id } })
+        // console.log(cart);
+        await cart.addCartdetails(cartDetailsData)
+
+
+        // console.log(user);
+
+        // const user = await User.findOne({ where: { id: 1} })
+        res.send(cart)
         // console.log(user.cart);
 
 

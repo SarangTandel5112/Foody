@@ -56,9 +56,9 @@ class Registration {
     public viewuser = async (req: Request, res: Response) => {
         const { userId } = req.params;
         console.log(userId);
-        const user = await Cart.findAll({
+        const user = await User.findAll({
             include: [{
-                model: CartDetails
+                model: Cart
             }]
         })
         console.log(user);
@@ -91,13 +91,11 @@ class Registration {
         // console.log(cart);
         await cart.addCartdetails(cartDetailsData)
 
-
         // console.log(user);
 
         // const user = await User.findOne({ where: { id: 1} })
         res.send(cart)
         // console.log(user.cart);
-
 
     }
 

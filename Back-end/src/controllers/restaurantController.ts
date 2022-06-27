@@ -4,24 +4,42 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import cookieparser from "cookie-parser";
 import nodemailer from 'nodemailer';
-import Restaurant from "../models/restaurant";
+// import Restaurant from "../models/restaurant";
 import requestInterface from "../interface/requestInterface";
+
+import db from "../db/sequelizeConnect";
+import { resolveScopes } from "sequelize-typescript";
+import { where } from "sequelize/types";
+// import restaurant from "../models/restaurant";
+
+const User = db.users
+const Restaurant = db.restaurant
+const food = db.food
+const Cart = db.cart
+const CartDetails = db.cartdetails
 
 class RestaurantRegistration {
 
     public restaurantRegistration = async (req: Request, res: Response) => {
 
         const hashPassword = await bcrypt.hash(req.body.password, 10)
-        try {
             const { RestaurantName, OwnerName, email, password } = req.body;
 
-            const doc: restaurantDoc = new Restaurant({
-                RestaurantName: RestaurantName,
-                OwnerName: OwnerName,
-                email: email,
-                password: hashPassword
-            });
-            doc.save()
+            const addRestorent = await Restaurant.create({ RestaurantName,
+                OwnerName,
+                email,
+                password: hashPassword })
+            console.log(addRestorent);
+
+            res.status(200).json({data:addRestorent})
+            // const doc = await Restaurant.create({
+            //     RestaurantName,
+            //     OwnerName,
+            //     email,
+            //     password: hashPassword
+            // });
+
+            // doc.save()
 
             // try {
             //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
@@ -55,12 +73,6 @@ class RestaurantRegistration {
             // catch (error) {
             //     console.log("error in token");
             // }
-            res.send(`${RestaurantName}, Please Verify Your E-Mail ID!!!`)
-        } catch (error) {
-            console.log(error);
-
-        }
-
     }
 
     public verifyRestaurantRegistration = async (req: Request, res: Response) => {
@@ -130,11 +142,6 @@ class RestaurantRegistration {
             console.log(error);
         }
 
-    }
-
-    public additem = async (req: requestInterface, res: Response) => {
-
-        
     }
 
 }

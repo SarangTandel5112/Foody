@@ -7,10 +7,26 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import requestInterface from "../interface/requestInterface";
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+import passport from "passport";
+const { OAuth2Client } = require("google-auth-library");
+const CLIENT_ID =
+  "902945112024-3mv4mc5dafkt56jtag0mpesedpe4mpsd.apps.googleusercontent.com";
+const client = new OAuth2Client(CLIENT_ID);
+// import clientid from "../db/googlekey"
+// const clientID = clientid.clientId
+// import clientkey from "../db/googlekey"
+// const clientserceT = clientid.clientSercet
+
+
 import db from "../db/sequelizeConnect";
 import cartDetails from "../models/cartDetails";
 
+import { resolveScopes } from "sequelize-typescript";
+import { where } from "sequelize/types";
+
 const User = db.users
+const Restaurant = db.restaurant
 const Cart = db.cart
 const CartDetails = db.cartdetails
 
@@ -33,8 +49,8 @@ class Registration {
 
         const adduser = await User.create({ name, email, password: hashPassword, address, phone })
         console.log(adduser);
-        const addcart = await Cart.create()
-        await adduser.setCart(addcart)
+        // const addcart = await Cart.create()
+        // await adduser.setCart(addcart)
         // adduser.cartId = addcart.id;
         // adduser.save();
         res.status(200).json({ data: adduser })
@@ -54,13 +70,15 @@ class Registration {
     }
 
     public viewuser = async (req: Request, res: Response) => {
-        const { userId } = req.params;
-        console.log(userId);
-        const user = await User.findAll({
-            include: [{
-                model: Cart
-            }]
-        })
+        // const { userId } = req.params;
+        // console.log(userId);
+        const user = await User.findAll(
+            // {
+            // include: [{
+            //     model: Cart
+            // }]
+        // }
+        )
         console.log(user);
         res.json({ data: user })
         // const user = await User.destroy({ where: { id: userId } })
@@ -84,6 +102,8 @@ class Registration {
         const fId = await db.sequelize.query("select id from carts where userId=1", {
             type: QueryTypes.SELECT
         })
+        const cartDetails = await CartDetails.create({ quantity,description })
+        res.status(200).json({data:cartDetails})
 
         // console.log(fId[0].id);
 
@@ -101,7 +121,7 @@ class Registration {
 
     public userDelete = async (req: Request, res: Response) => {
         const { id } = req.params;
-        await User.findByIdAndDelete(id)
+        await User.destroy({where :{id:id}})
         res.status(200).json("your data is delete")
         console.log("your data is delete", id)
     }
@@ -109,16 +129,22 @@ class Registration {
     public userUpdate = async (req: Request, res: Response) => {
 
         const { id } = req.params;
-        const data = req.body
+        console.log(id)
+        // const data = req.body
         // console.log(resId);
         // console.log(data);        
 
-        const userdata = await User.findById(id)
+        // const userdata = await User.findOne(id)
         // console.log(userdata);
 
-        const bodydata = req.body;
-        const updata = await User.findByIdAndUpdate(id, { ...bodydata })
-        console.log(updata);
+        const hashPassword = await bcrypt.hash(req.body.password, 10)
+
+        // const id = req.params;
+        const { name,email,password,address,phone } = req.body;
+        // const { data} = req.body;
+        const updata = await User.update({ name,email,password:hashPassword,address,phone },{where:{id}})
+        console.log({...req.body})
+        // console.log(updata);
 
 
         res.status(200).json({ data: "Item updated sucessfully" })
@@ -196,6 +222,36 @@ class Registration {
 
     }
 
+    public googleAuth = async (req: Request, res: Response) => {
+
+        let token = req.body.token;
+        console.log(token);
+        async function verify() {
+          const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+          });
+          const payload = ticket.getPayload();
+          
+          const doc = new User({
+            name:payload.name,
+            email:payload.email,
+            address:payload.picture,
+            phone:payload.exp
+          })
+          doc.save()
+          console.log(doc);
+
+
+        }
+        verify()
+          .then(() => {
+            res.cookie("session-token", token);
+            res.send("success");
+          })
+          .catch(console.error);
+    }
+    
 
 
 

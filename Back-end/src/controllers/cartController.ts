@@ -66,28 +66,28 @@ class cartController {
         // const user = await User.findOne({ where: { id: 1} })
         res.send(cart)
 
-        if (userfound) {
-            const newcartdetails = new cartDetails({
-                foodId: foodid,
-                quantity: quantity,
-                description: description,
-                cartId: userfound.cartId
-            })
-            newcartdetails.save();
+        // if (userfound) {
+        //     const newcartdetails = new cartDetails({
+        //         foodId: foodid,
+        //         quantity: quantity,
+        //         description: description,
+        //         cartId: userfound.cartId
+        //     })
+        //     newcartdetails.save();
 
-            const sum=Number(newcartdetails?.quantity)*Number(foodfound?.price)
+        //     const sum=Number(newcartdetails?.quantity)*Number(foodfound?.price)
 
-            const usercart = await cart.findById(userfound.cartId);
-            if (foodfound && usercart) {
-                const cart1 = await cart.findByIdAndUpdate(
-                    userfound.cartId,
-                    { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: Number(usercart.totalPrice) + Number((sum)) } }, { new: true });
+        //     const usercart = await cart.findById(userfound.cartId);
+        //     if (foodfound && usercart) {
+        //         const cart1 = await cart.findByIdAndUpdate(
+        //             userfound.cartId,
+        //             { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: Number(usercart.totalPrice) + Number((sum)) } }, { new: true });
                 
-                console.log(cart1)
-            }
+        //         console.log(cart1)
+        //     }
 
-            return res.status(200).json({ data: "Item Added to cart successfully" })
-        }
+        //     return res.status(200).json({ data: "Item Added to cart successfully" })
+        // }
     }
 
     public deleteCart = async (req: requestInterface, res: Response) => {

@@ -25,6 +25,9 @@ class cartController {
 
         const { quantity, description } = req.body;
         const { foodid } = req.params;
+        
+        //        const foodid = foodDetails.trim()
+
 
         if (!quantity) {
             return res.status(404).json({ data: "Please select quantity" })

@@ -5,6 +5,10 @@ import cartDetails from "../models/cartDetails";
 import cart from "../models/cart"
 import requestInterface from "../interface/requestInterface";
 import order from "../models/order";
+import PDFGenerator from "pdfkit";
+import fs from "fs";
+
+
 
 
 class orderController{
@@ -39,8 +43,32 @@ class orderController{
                 }) 
                 orderdata.save(); 
 
-                const cartDelete = await cart. findByIdAndDelete(cartid);
-                // console.log(cartDelete)                  
+                const cartDelete = await cart.findByIdAndDelete(cartid);
+                // console.log(cartDelete)    
+                
+                
+				 let theOutput = new PDFGenerator 
+                 //const cars = req.body;
+                 // pipe to a writable stream which would save the result into the same directory
+                 const userId = req.user.id;
+                 const User = await user.findById(userId);
+
+                 theOutput.pipe(fs.createWriteStream('OrderDocument.pdf'))
+                 console.log(userId);
+                 
+                 const orders = await order.find({userId:userId});
+                 console.log(orders);
+
+                     const response:any = {  
+                         data:orders,
+                     }
+                     
+                 theOutput.text(JSON.stringify(response));
+                 
+                 // write out file
+                 theOutput.end();
+
+                 
         }
         return res.status(200).json({ data: "Order successfully created" });
         }

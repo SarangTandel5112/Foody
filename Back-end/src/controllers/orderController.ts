@@ -46,7 +46,7 @@ class orderController{
                 const cartDelete = await cart.findByIdAndDelete(cartid);
                 // console.log(cartDelete)    
                 
-                
+                // ----------- Create pdf find user id -----------------//
 				 let theOutput = new PDFGenerator 
                  //const cars = req.body;
                  // pipe to a writable stream which would save the result into the same directory
@@ -66,8 +66,8 @@ class orderController{
                  theOutput.text(JSON.stringify(response));
                  
                  // write out file
-                 theOutput.end();
-
+                 theOutput.end();            
+                 
                  
         }
         return res.status(200).json({ data: "Order successfully created" });

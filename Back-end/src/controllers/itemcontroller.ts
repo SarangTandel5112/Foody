@@ -14,7 +14,6 @@ class itemcontroller {
         const foodData = await food.findAll({ where: { restaurantId: resId } })
         console.log(foodData);
         res.send(foodData);
-
     }
 
     public additem = async (req: requestInterface, res: Response) => {
@@ -54,16 +53,21 @@ class itemcontroller {
         const userId = req.user.id;
         const { foodId } = req.params;
 
-        const updatefood = await food.findById(foodId);
+        const updatefood = await food.findOne({ where: { id: foodId } })
+        // console.log(updatefood);
+        // res.send(updatefood)
+
+        // const updatefood = await food.findById(foodId);
         if (!updatefood) {
             return res.status(404).json({ data: "food not found" });
         }
-        if (updatefood.restaurantId.toString() !== userId) {
-            return res.status(404).json({ data: "food not Exist for this account" });
-        }
+        // if (updatefood.restaurantId.toString() !== userId) {
+        //     return res.status(404).json({ data: "food not Exist for this account" });
+        // }
 
         const updateDish = req.body;
-        await food.findByIdAndUpdate(foodId, { ...updateDish })
+        await food.update({ ...updateDish }, { where: { id: foodId } });
+        // await food.findByIdAndUpdate(foodId, { ...updateDish })
         // for (const property in updateDish) {
         //     updatefood[property] = updateDish[property];
         // }

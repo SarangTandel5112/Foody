@@ -8,7 +8,6 @@ import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import requestInterface from "../interface/requestInterface";
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-import passport from "passport";
 const { OAuth2Client } = require("google-auth-library");
 const CLIENT_ID =
   "902945112024-3mv4mc5dafkt56jtag0mpesedpe4mpsd.apps.googleusercontent.com";
@@ -22,8 +21,7 @@ const client = new OAuth2Client(CLIENT_ID);
 import db from "../db/sequelizeConnect";
 import cartDetails from "../models/cartDetails";
 
-import { resolveScopes } from "sequelize-typescript";
-import { where } from "sequelize/types";
+
 
 const User = db.users
 const Restaurant = db.restaurant

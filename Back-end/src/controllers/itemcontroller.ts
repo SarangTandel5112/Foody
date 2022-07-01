@@ -17,7 +17,10 @@ class itemcontroller {
     }
 
     public additem = async (req: requestInterface, res: Response) => {
-        const resId = 1;
+        const resId = req.user.id;
+        // console.log(req.user.id);
+        // return res.send(req.user.id);
+
         const { name, description, price, rating, status } = req.body;
 
         if (!name) {
@@ -41,7 +44,7 @@ class itemcontroller {
             status,
         })
         const restaurantdata = await restaurant.findOne({ where: { id: resId } })
-        console.log(restaurantdata);
+        // console.log(restaurantdata);
         await restaurantdata.addFood(newitem)
 
         // const result = await Restaurant.create({where:{id:req.user.id}}, { $push: { items: newitem._id } }, { new: true })
@@ -54,39 +57,31 @@ class itemcontroller {
         const { foodId } = req.params;
 
         const updatefood = await food.findOne({ where: { id: foodId } })
-        // console.log(updatefood);
-        // res.send(updatefood)
-
-        // const updatefood = await food.findById(foodId);
         if (!updatefood) {
             return res.status(404).json({ data: "food not found" });
         }
-        // if (updatefood.restaurantId.toString() !== userId) {
-        //     return res.status(404).json({ data: "food not Exist for this account" });
-        // }
+        if (updatefood.restaurantId !== userId) {
+            return res.status(404).json({ data: "food not Exist for this account" });
+        }
 
         const updateDish = req.body;
         await food.update({ ...updateDish }, { where: { id: foodId } });
-        // await food.findByIdAndUpdate(foodId, { ...updateDish })
-        // for (const property in updateDish) {
-        //     updatefood[property] = updateDish[property];
-        // }
-        // updatefood.save();
         return res.status(200).json({ data: "Food Update Successfully" });
     }
 
     public deleteitem = async (req: requestInterface, res: Response) => {
         const { foodId } = req.params;
         const userId = req.user.id;
-        const updatefood = await food.findById(foodId);
+        const updatefood = await food.findOne({ where: { restaurantId: userId } });
         if (!updatefood) {
             return res.status(404).json({ data: "food not found" });
         }
-        if (updatefood.restaurantId.toString() !== userId) {
+        if (updatefood.restaurantId !== userId) {
             return res.status(404).json({ data: "food not Exist for this account" });
         }
-        await Restaurant.findByIdAndUpdate(userId, { $pull: { items: foodId } })
-        await food.findByIdAndDelete(foodId);
+        await updatefood.destroy();
+        // await Restaurant.findByIdAndUpdate(userId, { $pull: { items: foodId } })
+        // await food.findByIdAndDelete(foodId);
         return res.status(200).json({ data: "Item Deleted Successfully" });
     }
 }

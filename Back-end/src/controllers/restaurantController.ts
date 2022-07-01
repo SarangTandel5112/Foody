@@ -23,56 +23,58 @@ class RestaurantRegistration {
     public restaurantRegistration = async (req: Request, res: Response) => {
 
         const hashPassword = await bcrypt.hash(req.body.password, 10)
-            const { RestaurantName, OwnerName, email, password } = req.body;
+        const { RestaurantName, OwnerName, email, password } = req.body;
 
-            const addRestorent = await Restaurant.create({ RestaurantName,
-                OwnerName,
-                email,
-                password: hashPassword })
-            console.log(addRestorent);
+        const addRestorent = await Restaurant.create({
+            RestaurantName,
+            OwnerName,
+            email,
+            password: hashPassword
+        })
+        console.log(addRestorent);
 
-            res.status(200).json({data:addRestorent})
-            // const doc = await Restaurant.create({
-            //     RestaurantName,
-            //     OwnerName,
-            //     email,
-            //     password: hashPassword
-            // });
+        res.status(200).json({ data: addRestorent })
+        // const doc = await Restaurant.create({
+        //     RestaurantName,
+        //     OwnerName,
+        //     email,
+        //     password: hashPassword
+        // });
 
-            // doc.save()
+        // doc.save()
 
-            // try {
-            //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
-            //     try {
-            //         let mailTransporter = nodemailer.createTransport({
-            //             service: 'gmail',
-            //             auth: {
-            //                 user: process.env.EMAIL,
-            //                 pass: process.env.EMAIL_PASSWORD
-            //             }
-            //         });
-            //         let mailDetails = {
-            //             from: process.env.EMAIL,
-            //             to: email,
-            //             subject: 'Verification of your account',
-            //             html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyRestaurantEMail/${a}           
-            //         <h3 style="text-align: center;">Thank You</h3>`
-            //         };
-            //         mailTransporter.sendMail(mailDetails, function (err, data) {
-            //             if (err) {
-            //                 console.log(err)
-            //             } else {
-            //                 console.log('Email sent successfully');
-            //             }
-            //         });
-            //     } catch (error) {
-            //         console.log("error while sending mail", error);
-            //     }
-            // }
+        // try {
+        //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
+        //     try {
+        //         let mailTransporter = nodemailer.createTransport({
+        //             service: 'gmail',
+        //             auth: {
+        //                 user: process.env.EMAIL,
+        //                 pass: process.env.EMAIL_PASSWORD
+        //             }
+        //         });
+        //         let mailDetails = {
+        //             from: process.env.EMAIL,
+        //             to: email,
+        //             subject: 'Verification of your account',
+        //             html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyRestaurantEMail/${a}           
+        //         <h3 style="text-align: center;">Thank You</h3>`
+        //         };
+        //         mailTransporter.sendMail(mailDetails, function (err, data) {
+        //             if (err) {
+        //                 console.log(err)
+        //             } else {
+        //                 console.log('Email sent successfully');
+        //             }
+        //         });
+        //     } catch (error) {
+        //         console.log("error while sending mail", error);
+        //     }
+        // }
 
-            // catch (error) {
-            //     console.log("error in token");
-            // }
+        // catch (error) {
+        //     console.log("error in token");
+        // }
     }
 
     public verifyRestaurantRegistration = async (req: Request, res: Response) => {
@@ -119,10 +121,10 @@ class RestaurantRegistration {
                         RestaurantName: result.RestaurantName,
                         OwnerName: result.OwnerName,
                         email: result.email,
-                        id: result._id,
+                        id: result.id,
                         user: "restaurant"
                     }
-
+                    // console.log(a);
                     const token = jwt.sign(a, process.env.SECRET_KEY as string);
                     res.status(200).cookie("AuthToken", token).set("AuthToken", token).json({ status: "Success" });
 

@@ -12,6 +12,7 @@ import db from "../db/sequelizeConnect";
 const User = db.users
 const Cart = db.cart
 const CartDetails = db.cartdetails
+const Food = db.food
 
 class cartController {
     // ------------ AddCart -----------------//
@@ -32,84 +33,54 @@ class cartController {
 
         const { quantity, description } = req.body;
         const { foodid } = req.params;
+        const userId = req.user.id;
 
         if (!quantity) {
             return res.status(404).json({ data: "Please select quantity" })
         }
 
-
-        const user = await User.findAll({
-            include: [{
-                model: Cart,
-            }]
-        })
-
-        //Food find
-
-
         const cartDetailsData = await CartDetails.create({ quantity, description })
-        // console.log(cartDetailsData);
+
+        const cart = await Cart.findOne({ where: { userId: userId } })
+        if (!cart) {
+            return res.status(404).json({ data: "Cart not found" })
+        }
+        const fooddata = await Food.findOne({ where: { id: foodid } })
+        if (!fooddata) {
+            return res.status(404).json({ data: "food not found" })
+        }
+
+        let sum = cart.totalPrice + (Number(quantity) * fooddata.price)
+
+        cart.update({ totalPrice: sum });
 
 
-        const fId = await db.sequelize.query("select id from carts where userId=1", {
-            type: QueryTypes.SELECT
-        })
-
-        // console.log(fId[0].id);
-
-        const cart = await Cart.findOne({ where: { id: fId[0].id } })
-        // console.log(cart);
         await cart.addCartdetails(cartDetailsData)
 
-        // console.log(user);
+        res.status(200).json({ data: "Added to Cart Successfully" });
 
-        // const user = await User.findOne({ where: { id: 1} })
-        res.send(cart)
-
-        // if (userfound) {
-        //     const newcartdetails = new cartDetails({
-        //         foodId: foodid,
-        //         quantity: quantity,
-        //         description: description,
-        //         cartId: userfound.cartId
-        //     })
-        //     newcartdetails.save();
-
-        //     const sum=Number(newcartdetails?.quantity)*Number(foodfound?.price)
-
-        //     const usercart = await cart.findById(userfound.cartId);
-        //     if (foodfound && usercart) {
-        //         const cart1 = await cart.findByIdAndUpdate(
-        //             userfound.cartId,
-        //             { $push: { cartDetailsId: newcartdetails._id }, $set: { totalPrice: Number(usercart.totalPrice) + Number((sum)) } }, { new: true });
-                
-        //         console.log(cart1)
-        //     }
-
-        //     return res.status(200).json({ data: "Item Added to cart successfully" })
-        // }
     }
 
     public deleteCart = async (req: requestInterface, res: Response) => {
         const { cartDetailsId } = req.params;
-        const cartdetailsdata=await cartDetails.findById(cartDetailsId)
+        const cartdetailsdata = await cartDetails.findById(cartDetailsId)
         // console.log(cartDetailsId)
         // const { foodid } = req.params;
-        
-        const cartdata=await cart.findById(cartdetailsdata?.cartId)
+
+        const cartdata = await cart.findById(cartdetailsdata?.cartId)
         // console.log(cartdata);
-        const fooddata=await food.findById(cartdetailsdata?.foodId)
+        const fooddata = await food.findById(cartdetailsdata?.foodId)
         // console.log(fooddata); 
         // console.log(Number(cartdetailsdata?.quantity)*Number(fooddata?.price))
-        const sum=Number(cartdetailsdata?.quantity)*Number(fooddata?.price)
+        const sum = Number(cartdetailsdata?.quantity) * Number(fooddata?.price)
         // console.log(sum,cartdetailsdata?.quantity,fooddata?.price);
         // console.log(cartdetailsdata?.cartId)
-        await cart.findByIdAndUpdate(cartdetailsdata?.cartId,{$set:{totalPrice:Number(cartdata?.totalPrice)-Number(sum)}},{new:true})
+        await cart.findByIdAndUpdate(cartdetailsdata?.cartId, { $set: { totalPrice: Number(cartdata?.totalPrice) - Number(sum) } }, { new: true })
         await cartDetails.findByIdAndDelete(cartDetailsId)
-        
+
         return res.status(200).json({ data: "Food Deleted Successfully" });
 
-    } 
+    }
     public updateCart = async (req: requestInterface, res: Response) => {
 
         let { cartId } = req.params;

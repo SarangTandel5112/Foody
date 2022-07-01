@@ -18,7 +18,8 @@ async function tablesync(db: any) {
     await db.cart.belongsTo(db.users, { onDelete: 'CASCADE' })
     await db.cart.hasMany(db.cartdetails, { onDelete: 'CASCADE' })
     await db.cartdetails.belongsTo(db.cart, { onDelete: 'CASCADE' })
-
+    await db.food.hasMany(db.cartdetails, { onDelete: 'CASCADE' })
+    await db.cartdetails.belongsTo(db.food, { onDelete: 'CASCADE' })
     await db.restaurant.hasMany(db.food, { onDelete: 'CASCADE' })
     await db.food.belongsTo(db.restaurant, { onDelete: 'CASCADE' })
 

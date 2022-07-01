@@ -56,6 +56,7 @@ class cartController {
 
 
         await cart.addCartdetails(cartDetailsData)
+        // await fooddata.addCartdetails(cartDetailsData)
 
         res.status(200).json({ data: "Added to Cart Successfully" });
 
@@ -63,7 +64,11 @@ class cartController {
 
     public deleteCart = async (req: requestInterface, res: Response) => {
         const { cartDetailsId } = req.params;
-        const cartdetailsdata = await cartDetails.findById(cartDetailsId)
+        console.log(cartDetailsId);
+
+        const cartdetailsdata = await CartDetails.findOne({ where: { id: cartDetailsId } })
+        console.log(cartdetailsdata);
+        return res.send(cartdetailsdata);
         // console.log(cartDetailsId)
         // const { foodid } = req.params;
 

@@ -32,56 +32,64 @@ class cartController {
     public addCart = async (req: requestInterface, res: Response) => {
 
         const { quantity, description } = req.body;
-        const { foodid } = req.params;
+        let { foodid } = req.params;
+        foodid = foodid.trim()
         const userId = req.user.id;
 
         if (!quantity) {
             return res.status(404).json({ data: "Please select quantity" })
         }
 
-        const cartDetailsData = await CartDetails.create({ quantity, description })
-
         const cart = await Cart.findOne({ where: { userId: userId } })
+
         if (!cart) {
             return res.status(404).json({ data: "Cart not found" })
         }
+
         const fooddata = await Food.findOne({ where: { id: foodid } })
+
         if (!fooddata) {
             return res.status(404).json({ data: "food not found" })
         }
+
+        const cartDetailsData = await CartDetails.create({ quantity, description })
 
         let sum = cart.totalPrice + (Number(quantity) * fooddata.price)
 
         cart.update({ totalPrice: sum });
 
-
         await cart.addCartdetails(cartDetailsData)
-        // await fooddata.addCartdetails(cartDetailsData)
+        await fooddata.addCartdetails(cartDetailsData)
 
         res.status(200).json({ data: "Added to Cart Successfully" });
 
     }
 
     public deleteCart = async (req: requestInterface, res: Response) => {
-        const { cartDetailsId } = req.params;
-        console.log(cartDetailsId);
-
+        let { cartDetailsId } = req.params;
+        cartDetailsId = cartDetailsId.trim();
         const cartdetailsdata = await CartDetails.findOne({ where: { id: cartDetailsId } })
-        console.log(cartdetailsdata);
-        return res.send(cartdetailsdata);
-        // console.log(cartDetailsId)
-        // const { foodid } = req.params;
 
-        const cartdata = await cart.findById(cartdetailsdata?.cartId)
-        // console.log(cartdata);
-        const fooddata = await food.findById(cartdetailsdata?.foodId)
-        // console.log(fooddata); 
-        // console.log(Number(cartdetailsdata?.quantity)*Number(fooddata?.price))
+        if (!cartdetailsdata) {
+            return res.status(400).json({ data: "Cart not found" })
+        }
+
+        const cartdata = await Cart.findOne({ where: { id: cartdetailsdata.cartId } });
+
+        if (!cartdata) {
+            return res.status(400).json({ data: "Cart not found" })
+        }
+
+        const fooddata = await Food.findOne({ where: { id: cartdetailsdata.foodId } });
+
+        if (!fooddata) {
+            return res.status(400).json({ data: "Food not found" })
+        }
+
         const sum = Number(cartdetailsdata?.quantity) * Number(fooddata?.price)
-        // console.log(sum,cartdetailsdata?.quantity,fooddata?.price);
-        // console.log(cartdetailsdata?.cartId)
-        await cart.findByIdAndUpdate(cartdetailsdata?.cartId, { $set: { totalPrice: Number(cartdata?.totalPrice) - Number(sum) } }, { new: true })
-        await cartDetails.findByIdAndDelete(cartDetailsId)
+
+        cartdata.update({ totalPrice: cartdata.totalPrice - sum })
+        cartdetailsdata.destroy();
 
         return res.status(200).json({ data: "Food Deleted Successfully" });
 
@@ -91,32 +99,31 @@ class cartController {
         let { cartId } = req.params;
         cartId = cartId.trim()
         const userId = req.user.id;
-        // console.log(cartId);
-        const cartupdate = await cartDetails.findById(cartId);
+        console.log(cartId);
+        const cartdata = await CartDetails.findOne({ where: { id: cartId } });
 
-        if (!cartupdate) {
+        if (!cartdata) {
             return res.status(404).json({ data: "Item not found" })
         }
+        console.log(cartdata.cartId);
 
-        const checkcart = await cart.findById(cartupdate.cartId);
+        const checkcart = await Cart.findOne({ where: { id: cartdata.cartId } });
 
         if (checkcart) {
-            if (checkcart.userId.toString() !== userId) {
+            if (checkcart.userId !== userId) {
                 return res.status(400).json({ data: "Item does not exist to your account" })
             }
         }
+
         const dataupdate = req.body;
         const { quantity } = req.body;
         if (quantity) {
-            const fooddata = await food.findById(cartupdate.foodId);
-            // console.log(cartupdate.quantity);
-            const sum = Number(quantity) - Number(cartupdate.quantity);
+            const fooddata = await Food.findOne({ where: { id: cartdata.foodId } });
+            const sum = Number(quantity) - Number(cartdata.quantity);
             if (fooddata) {
-                const editprice = sum * Number(fooddata.price);
-                // console.log(editprice);
-                await cart.findByIdAndUpdate(cartupdate.cartId, { $set: { totalPrice: Number(checkcart?.totalPrice) + Number(editprice) } }, { new: true })
-                const temp = await cartDetails.findByIdAndUpdate(cartId, { $set: { ...dataupdate } }, { new: true })
-                // console.log(temp);
+                const editprice = checkcart.totalPrice + sum * Number(fooddata?.price);
+                await checkcart.update({ totalPrice: editprice })
+                await cartdata.update({ ...dataupdate })
             }
         }
         return res.status(200).json({ data: "Cart Update Successfully" })

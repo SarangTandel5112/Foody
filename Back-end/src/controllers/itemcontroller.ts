@@ -44,12 +44,12 @@ class itemcontroller {
             status,
         })
         const restaurantdata = await restaurant.findOne({ where: { id: resId } })
-        // console.log(restaurantdata);
+        console.log(restaurantdata);
         await restaurantdata.addFood(newitem)
 
         // const result = await Restaurant.create({where:{id:req.user.id}}, { $push: { items: newitem._id } }, { new: true })
         // newitem.save();
-        res.status(200).json({ data: "Item added sucessfully" + newitem })
+        res.status(200).json({ data: "Item added sucessfully", item: newitem })
     }
 
     public updateitem = async (req: requestInterface, res: Response) => {

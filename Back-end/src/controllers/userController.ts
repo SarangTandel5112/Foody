@@ -47,7 +47,7 @@ class Registration {
 
         const adduser = await User.create({ name, email, password: hashPassword, address, phone })
         console.log(adduser);
-        const addcart = await Cart.create()
+        const addcart = await Cart.create({ totalPrice: 0 })
         await adduser.setCart(addcart)
         // adduser.cartId = addcart.id;
         // adduser.save();

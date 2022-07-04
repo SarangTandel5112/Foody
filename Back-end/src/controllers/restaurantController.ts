@@ -108,8 +108,9 @@ class RestaurantRegistration {
 
         try {
             const { email, password } = req.body;
+            console.log("email");
 
-            const result: any = await Restaurant.findOne({ email: email })
+            const result: any = await Restaurant.findOne({ where: { email: email } })
 
 
             if (result != null) {

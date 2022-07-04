@@ -2,8 +2,10 @@ import { Response } from "express";
 // import foodinterface from "../interface/food";
 import requestInterface from "../interface/requestInterface";
 import food from "../models/food";
-import Restaurant from "../models/restaurant";
-
+// import Restaurant from "../models/restaurant";
+import db from "../db/sequelizeConn";
+const Food = db.food;
+const Restaurant = db.restaurant
 
 class itemcontroller {
 
@@ -24,15 +26,16 @@ class itemcontroller {
             return res.status(404).json({ data: "status not found" })
         }
 
-        const newitem = await new food({
+        const newitem = await food.create({
             name,
             description,
             price,
             status,
             restaurantId: resId
         })
-        const result = await Restaurant.findByIdAndUpdate(req.user.id, { $push: { items: newitem._id } }, { new: true })
-        newitem.save();
+        const result = await Restaurant.findOne({ where: { id: resId } })
+        console.log(result)
+        await result.addFood(newitem)
         res.status(200).json({ data: "Item added sucessfully" })
     }
 

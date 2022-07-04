@@ -3,17 +3,19 @@ import dotenv from 'dotenv';
 import Routes from './Routes/route';
 import connectDB from './db/connectDB';
 import User from './models/user';
+import bodyParser from 'body-parser';
 import cookieparser from 'cookie-parser';
 import passport from 'passport';
 import "express-async-errors";
 import errorhandling from "./log/error"
+import "./db/sequelizeConn"
 
 dotenv.config();
 dotenv.config({path:'/home/sanjay/VSC/zometo/.env'});
 
 
 
-const db = new connectDB();
+// const db = new connectDB();
 
 const router = new Routes().router
 
@@ -31,6 +33,7 @@ class app {
     }
 
     private middleWare(): void {
+        this.app.use(bodyParser.json())
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
         this.app.use(cookieparser());

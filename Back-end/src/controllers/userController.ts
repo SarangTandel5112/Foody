@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import User from "../models/user";
+// import User from "../seq_models/user";
 import cart from "../models/cart";
 import userDoc from "../interface/userInterface";
 import bcrypt from 'bcrypt';
@@ -17,7 +17,8 @@ const client = new OAuth2Client(CLIENT_ID);
 // import clientkey from "../db/googlekey"
 // const clientserceT = clientid.clientSercet
 
-
+import db from "../db/sequelizeConn";
+const User = db.users
 
 class Registration {
 
@@ -26,27 +27,10 @@ class Registration {
         const hashPassword = await bcrypt.hash(req.body.password, 10)
         try {
             const { email, name, password ,address , phone} = req.body;
-            const data = req.body;            
+            const user = req.body;            
+            const addUsers =  await User.create({ name, email, password: hashPassword, address, phone });
+            console.log(addUsers);
 
-            const doc: userDoc = new User({ 
-                // ...data
-                name: name,
-                email: email,
-                password: hashPassword,
-                address : address,
-                phone : phone
-            });
-
-            const usercart=new cart({
-                userId:doc._id,
-            })
-            
-            usercart.save();
-            doc.cartId=usercart._id;
-
-            // console.log(doc)
-            doc.save();
-            res.send(doc)
         } catch (error) {
             console.log(error,"error out");
 
@@ -56,7 +40,7 @@ class Registration {
 
     public userDelete = async(req:Request,res:Response)=>{
         const {id} = req.params;
-        await User.findByIdAndDelete(id)
+        const data = await User.destroy({ where:{ id: id}});
         res.status(200).json("your data is delete")
         console.log("your data is delete",id)
     }
@@ -65,16 +49,14 @@ class Registration {
 
         const {id} = req.params;
         const data = req.body
-        // console.log(resId);
-        // console.log(data);        
-        
-        const userdata=await User.findById(id)
-        // console.log(userdata);
-        
-        const bodydata=req.body;
-        const updata=await User.findByIdAndUpdate(id,{...bodydata})
-        console.log(updata);
-        
+               
+        const hashPassword = await bcrypt.hash(req.body.password, 10)
+
+        // const id = req.params;
+        const { name, email, password, address, phone } = req.body;
+        // const { data} = req.body;
+        const updata = await User.update({ name, email, password: hashPassword, address, phone }, { where: { id } })
+        console.log({ ...req.body })
 
         res.status(200).json({data:"Item updated sucessfully"})
     }
@@ -111,29 +93,29 @@ class Registration {
         try {
             const { email, password } = req.body;
 
-            const result: any = await User.findOne({ email: email })
+            console.log(email,password);
 
+            const result: any = await User.findOne({ where: { email: email } })
 
             if (result != null) {
                 const isMatch = await bcrypt.compare(password, result.password)
-                
 
                 if (result.email === email && isMatch) {
 
                     const a = {
                         email: result.email,
                         name: result.name,
-                        password:result.password,
-                        address:result.address,
-                        phone:result.phone,
-                        id: result._id,
+                        password: result.password,
+                        address: result.address,
+                        phone: result.phone,
+                        id: result.id,
                         user: "user"
                     }
                     console.log(a)
                     const token = jwt.sign(a, process.env.SECRET_KEY as string);
                     res.status(200).cookie("AuthToken", token).set("AuthToken", token).json({ status: `<h1> You have Successfully Logged in!!!!!</h1>` });
 
-                }   
+                }
 
                 else if (isMatch === false) {
                     res.send("Invalid Password!!!")
@@ -150,6 +132,7 @@ class Registration {
         }
 
     }
+
 
     public googleAuth = async (req: Request, res: Response) => {
 

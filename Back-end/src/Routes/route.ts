@@ -7,6 +7,7 @@ import cartController from '../controllers/cartController';
 
 import isauth from '../middleware/isauth'
 import itemcontroller from '../controllers/itemcontroller';
+import userFunction from '../controllers/userFunction';
 
 const registerUser = new Registration();
 const UserValidation = new userValidation();
@@ -14,6 +15,7 @@ const auth=new isauth();
 const registerRestaurant = new RestaurantRegistration();
 const RestaurantValidation = new restaurantValidation();
 const Itemcontroller=new itemcontroller();
+const UserFunction=new userFunction();
 
 const cart = new  cartController();
 
@@ -32,6 +34,7 @@ constructor() {
     this.restaurantVerification();
     this.cart();
     this.restaurant();
+    this.userFunction();
     // this.delete()
 }
 
@@ -86,6 +89,10 @@ private restaurant(){
     this.router.route('/additem').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.additem);
     this.router.route('/updateitem/:foodId').post(auth.isLoggenin,auth.isRestaurant,Itemcontroller.updateitem);
     this.router.route('/deleteitem/:foodId').delete(auth.isLoggenin,auth.isRestaurant,Itemcontroller.deleteitem);
+}
+
+private userFunction(){
+    this.router.route('/searchfood/:key').post(UserFunction.searchFunction)
 }
 
 }

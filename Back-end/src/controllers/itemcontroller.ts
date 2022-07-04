@@ -1,7 +1,5 @@
 import { Response } from "express";
 import requestInterface from "../interface/requestInterface";
-import Restaurant from "../models/restaurant";
-
 import db from "../db/sequelizeConnect";
 
 const food = db.food
@@ -47,8 +45,6 @@ class itemcontroller {
         console.log(restaurantdata);
         await restaurantdata.addFood(newitem)
 
-        // const result = await Restaurant.create({where:{id:req.user.id}}, { $push: { items: newitem._id } }, { new: true })
-        // newitem.save();
         res.status(200).json({ data: "Item added sucessfully", item: newitem })
     }
 
@@ -80,8 +76,6 @@ class itemcontroller {
             return res.status(404).json({ data: "food not Exist for this account" });
         }
         await updatefood.destroy();
-        // await Restaurant.findByIdAndUpdate(userId, { $pull: { items: foodId } })
-        // await food.findByIdAndDelete(foodId);
         return res.status(200).json({ data: "Item Deleted Successfully" });
     }
 }

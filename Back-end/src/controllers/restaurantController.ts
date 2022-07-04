@@ -4,8 +4,10 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import cookieparser from "cookie-parser";
 import nodemailer from 'nodemailer';
-import Restaurant from "../models/restaurant";
+// import Restaurant from "../seq_models/restaurant";
 import requestInterface from "../interface/requestInterface";
+import db from "../db/sequelizeConn";
+const Restaurant = db.restaurant
 
 class RestaurantRegistration {
 
@@ -15,47 +17,11 @@ class RestaurantRegistration {
         try {
             const { RestaurantName, OwnerName, email, password } = req.body;
 
-            const doc: restaurantDoc = new Restaurant({
-                RestaurantName: RestaurantName,
-                OwnerName: OwnerName,
-                email: email,
-                password: hashPassword
-            });
-            doc.save()
+            const addRestaurant  = await Restaurant.create({  RestaurantName, OwnerName, email, password: hashPassword  });
+            console.log(addRestaurant)
 
-            // try {
-            //     const a = await jwt.sign({ ...doc }, process.env.SECRET_KEY as string)
-            //     try {
-            //         let mailTransporter = nodemailer.createTransport({
-            //             service: 'gmail',
-            //             auth: {
-            //                 user: process.env.EMAIL,
-            //                 pass: process.env.EMAIL_PASSWORD
-            //             }
-            //         });
-            //         let mailDetails = {
-            //             from: process.env.EMAIL,
-            //             to: email,
-            //             subject: 'Verification of your account',
-            //             html: `<h1 style="text-align: center;">Verify Your Account</h1> http://localhost:3000/verifyRestaurantEMail/${a}           
-            //         <h3 style="text-align: center;">Thank You</h3>`
-            //         };
-            //         mailTransporter.sendMail(mailDetails, function (err, data) {
-            //             if (err) {
-            //                 console.log(err)
-            //             } else {
-            //                 console.log('Email sent successfully');
-            //             }
-            //         });
-            //     } catch (error) {
-            //         console.log("error while sending mail", error);
-            //     }
-            // }
+            res.status(200).json({ data: addRestaurant })
 
-            // catch (error) {
-            //     console.log("error in token");
-            // }
-            res.send(`${RestaurantName}, Please Verify Your E-Mail ID!!!`)
         } catch (error) {
             console.log(error);
 
